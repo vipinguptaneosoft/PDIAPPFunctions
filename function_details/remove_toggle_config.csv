@@ -1,0 +1,5 @@
+tags,threshold_time,time_freq,toggle_on
+f1p1_spall_status,240,60,0
+unit_shutdown_status,360,60,1
+unit_shutdown_status,360,60,0
+f1p1_spall_status,240,60,1

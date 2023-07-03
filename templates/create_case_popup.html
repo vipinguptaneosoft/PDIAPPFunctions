@@ -1,0 +1,33 @@
+<div id="popup">
+
+    <form class="action-buttons-fixed mb-0" id="add_account" method="post" action="/cases/">
+        <div class="form-group row align-items-center py-0">
+            <label class="col-lg-5 col-xl-3 control-label text-lg-right mb-0">Name</label>
+            <div class="col-lg-7 col-xl-6">
+                <input type="text" class="form-control form-control-modern" name="name" id="code-id"
+                       required value=""/>
+                <p class="text-danger m-0 d-none" id="code-id-error-txt"></p>
+            </div>
+        </div>
+        <div class="form-group row py-0">
+            <label class="col-lg-5 col-xl-3 control-label text-lg-right mb-0">Value</label>
+            <div class="col-lg-7 col-xl-6">
+                <input type="text" class="form-control form-control-modern" name="value"
+                       required value=""/>
+            </div>
+        </div>
+        <div class="form-group row py-0">
+            <label class="col-lg-5 col-xl-3 control-label text-lg-right mb-0">Description</label>
+            <div class="col-lg-7 col-xl-6">
+                <input type="text" class="form-control form-control-modern" name="description"
+                       required value=""/>
+            </div>
+        </div>
+        <div class="modal-footer py-0 border-top-0">
+            <button type="submit" class="btn btn-default" name="save"
+                    value="save-registration">Create
+            </button>
+        </div>
+
+    </form>
+</div>

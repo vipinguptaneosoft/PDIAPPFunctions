@@ -1,0 +1,149 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Data</title>
+  <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800|Shadows+Into+Light"
+    rel="stylesheet" type="text/css">
+
+  <!-- Vendor CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+    integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.min.css"
+    integrity="sha512-9h7XRlUeUwcHUf9bNiWSTO9ovOWFELxTlViP801e5BbwNJ5ir9ua6L20tEroWZdm+HFBAWBLx2qH4l4QHHlRyg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+    integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.1/css/boxicons.min.css"
+    integrity="sha512-nOk7sj5T6Zi3Ond5VHhc+L4WHvRuRhV/cOcWWDl2mOyTetiIfuv56UJzD0yYhz9Kqwk1PpU0/PX5+qpX43hVWg=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+</head>
+
+<body>
+
+  <div class="container">
+    <h2>Case</h2>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createCase" style="float: right;">
+      +Add
+    </button>
+  </div>
+  <div style="display: flex; justify-content: center; align-items: center; padding-top: 100px;">
+
+    <table>
+      <tr>
+        <th style="width: 200px;">Name</th>
+        <th style="width: 200px;">description</th>
+        <th style="width: 200px;">Action</th>
+      </tr>
+      {% for data in cases %}
+      <tr>
+        <td>{{data.name}}</td>
+        <td>{{data.description}}</td>
+        <td>
+          <li class="list-inline-item">
+            <button type="button" class="btn rounded-0" data-placement="top" data-toggle="modal"
+              onclick="openCaseDetailPage('{{data.id}}')" title="Edit">
+              <i class="fa fa-edit"></i></button>
+          </li>
+          <li class="list-inline-item">
+            <button type="button" class="btn btn-sm rounded-0" data-placement="top" data-toggle="modal"
+            onclick="add_delete_id_case('{{data.id}}')" data-target="#deletion" title="Delete">
+              <i class="fa fa-trash"></i></button>
+          </li>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="createCase" role="dialog" aria-labelledby="createCaseLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form class="action-buttons-fixed mb-0" id="add_account" method="post" action="/cases/">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Case</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            <div class="form-group row align-items-center py-0">
+              <label class="col-lg-5 col-xl-3 control-label text-lg-right mb-0">Name</label>
+              <div class="col-lg-7 col-xl-6">
+                <input type="text" class="form-control form-control-modern" name="name" id="code-id" required
+                  value="" />
+              </div>
+            </div>
+
+            <div class="form-group row py-0">
+              <label class="col-lg-5 col-xl-3 control-label text-lg-right mb-0">Description</label>
+              <div class="col-lg-7 col-xl-6">
+                <input type="text" class="form-control form-control-modern" name="description" required value="" />
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary">Create</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+
+  <div class="modal fade" id="deletion" role="dialog" aria-labelledby="deletionLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form class="action-buttons-fixed mb-0" id="add_account" method="post" action="/delete_case/">
+        {% csrf_token %}
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Delete</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+
+            Are you sure you want to delete.
+            <input type="hidden" id="case_deletion" class="form-control form-control-modern" name="case_id" required
+                  value="" />
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            <button type="submit" class="btn btn-primary">Yes</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"
+    integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+    crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+    integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+    crossorigin="anonymous"></script>
+
+  <Script src="{% static 'js/custom.js' %}"></Script>
+
+
+</body>
+
+</html>

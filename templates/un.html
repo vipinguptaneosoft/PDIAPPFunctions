@@ -1,0 +1,84 @@
+<table id="myTable">
+    <thead>
+      <tr>
+        <th>Column 1</th>
+        <th>Column 2</th>
+        <th>Column 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Row 1, Column 1</td>
+        <td>Row 1, Column 2</td>
+        <td>Row 1, Column 3</td>
+      </tr>
+      <tr>
+        <td>Row 2, Column 1</td>
+        <td>Row 2, Column 2</td>
+        <td>Row 2, Column 3</td>
+      </tr>
+      <tr>
+        <td>Row 3, Column 1</td>
+        <td>Row 3, Column 2</td>
+        <td>Row 3, Column 3</td>
+      </tr>
+    </tbody>
+  </table>
+  
+  <script>
+    var draggedRow = null;
+    var table = document.getElementById("myTable");
+  
+    // Add draggable attribute to all rows in the table
+    for (var i = 0; i < table.rows.length; i++) {
+      table.rows[i].draggable = true;
+      table.rows[i].addEventListener("dragstart", function(event) {
+        // Save reference to the dragged row
+        draggedRow = event.target;
+      });
+    }
+  
+    // Allow dropping of rows before or after other rows
+    table.addEventListener("dragover", function(event) {
+      event.preventDefault();
+      var targetRow = event.target.closest("tr");
+      if (targetRow) {
+        // Highlight the drop target row
+        targetRow.classList.add("drag-over");
+      }
+    });
+  
+    // Reset the drop target row highlight when leaving it
+    table.addEventListener("dragleave", function(event) {
+      var targetRow = event.target.closest("tr");
+      if (targetRow) {
+        targetRow.classList.remove("drag-over");
+      }
+    });
+  
+    // Move the dragged row to the drop target position
+    table.addEventListener("drop", function(event) {
+      event.preventDefault();
+      var targetRow = event.target.closest("tr");
+      console.log(draggedRow, targetRow);
+      if (targetRow && draggedRow !== targetRow) {
+        // Determine whether to insert before or after the drop target
+        var targetIndex = Array.from(table.rows).indexOf(targetRow);
+        var draggedIndex = Array.from(table.rows).indexOf(draggedRow);
+        if (draggedIndex < targetIndex) {
+          targetRow.parentNode.insertBefore(draggedRow, targetRow.nextSibling);
+        } else {
+          targetRow.parentNode.insertBefore(draggedRow, targetRow);
+        }
+      }
+      // Reset the drop target row highlight
+      targetRow.classList.remove("drag-over");
+    });
+  </script>
+  
+  <style>
+    tr.drag-over {
+      background-color: #eee;
+    }
+  </style>
+  

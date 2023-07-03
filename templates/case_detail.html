@@ -1,0 +1,578 @@
+{% load static %}
+<html>
+
+<head>
+      <title>Split Screen</title>
+      <link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800|Shadows+Into+Light"
+            rel="stylesheet" type="text/css">
+            
+      <!-- Vendor CSS -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.css"
+            integrity="sha512-aOG0c6nPNzGk+5zjwyJaoRUgCdOrfSDhmMID2u4+OIslr0GjpLKo7Xm0Ao3xmpM4T8AmIouRkqwj1nrdVsLKEQ=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.theme.min.css"
+            integrity="sha512-9h7XRlUeUwcHUf9bNiWSTO9ovOWFELxTlViP801e5BbwNJ5ir9ua6L20tEroWZdm+HFBAWBLx2qH4l4QHHlRyg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+            integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
+
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+            integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.1/css/boxicons.min.css"
+            integrity="sha512-nOk7sj5T6Zi3Ond5VHhc+L4WHvRuRhV/cOcWWDl2mOyTetiIfuv56UJzD0yYhz9Kqwk1PpU0/PX5+qpX43hVWg=="
+            crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+      <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.0.45/css/materialdesignicons.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" />
+      <link rel='stylesheet' href="{% static 'css/custom.css' %}" />
+
+</head>
+
+<body>
+      <div id="overlay" style="display: none;"></div>
+
+      <div id="loader" style="display: none;"></div>
+
+
+      <!-- ROW -->
+      <div class="row" style="height: 100%; width: 100%;"> 
+
+
+            <!--Left Pane-->
+            <div style="width:25%;"  class="v1">
+                  <div class="container" style="height: 14%;">
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTask"
+                              style="float: right; margin: 25px;">
+                              +Add
+                        </button>
+
+                  </div>
+                  <div style="overflow:scroll; height: 86%; width: 100%;" class="container">
+                        <div style="flex-direction: row; display: flex;">
+                              <p style="width: 80px; text-align: center;"><b>Name</b></p>
+                              <p style="width: 120px; text-align: center"><b>Function</b></p>
+                              <p style="width: 80px; text-align: center"><b>Action</b></p>
+                        </div>
+                        
+                        <table id="myTable">
+                              {% for d in data %}
+                              <tr id="{{d.id}}">
+                                    <td style="width: 80px;" class="truncate" >{{d.alias}}</td>
+                                    <!-- <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#updateTask" onclick="get_predefined_task_data('{{d.id}}', '{{case_id}}')"
+                                          style="float: right; margin: 25px;">
+                                          {{d.function_name}}
+                                    </button> -->
+                                    <td  style="width: 120px;">{{d.function_name}}</td>
+                                    <td style="text-align: center;">
+                                          <li class="list-inline-item">
+                                                <button type="button" class="btn rounded-0" data-placement="top"
+                                                      data-toggle="modal"
+                                                      onclick="open_right_panel('{{d.id}}', '{{d.function_id}}' , '{{case_id}}')"
+                                                      title="Edit">
+                                                      <i class="fa fa-edit"></i></button>
+                                          </li>
+                                          <li class="list-inline-item">
+                                                <button type="button" class="btn btn-sm rounded-0" data-placement="top"
+                                                      onclick="add_delete_id_function('{{d.case}}', '{{d.id}}')"
+                                                      data-toggle="modal" data-target="#deletion_function"
+                                                      title="Delete">
+                                                      <i class="fa fa-trash"></i></button>
+                                          </li>
+                                    </td>
+                              </tr>
+                              {% endfor %}
+                        </table>
+                  </div>
+
+                  <!-- Modal -->
+                  <!-- <div class="modal fade" id="createTask" role="dialog" aria-labelledby="createTaskLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                              <div class="action-buttons-fixed mb-0" id="add_account">
+                                    <div class="modal-content">
+                                          <div class="modal-header">
+                                                <h5 class="modal-title">Add Task</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                      aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                </button>
+                                          </div>
+                                          <div class="modal-body">
+                                                <div id="add_input_function" class="modal fade" role="dialog" aria-labelledby="addInputFunctionLabel"
+                                                aria-hidden="true">
+                                                      <span class="close">&times;</span>
+                                                      <p>This is the nested popup!</p>
+                                                    </div>
+                                                <div class="form-group row align-items-start d-flex flex-column py-0">
+                                                      <label>Alias Name</label>
+                                                      <input type="text" class="form-control form-control-modern"
+                                                            id="alias" required />
+                                                      <p id="code-id-error-txt" class="d-none"></p>
+                                                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_input_function">Add</button>
+                                                      
+
+                                                      <label>Function</label>
+                                                      <select id="fid" class="form-control form-select" style="width:100%">
+                                                            {% for f in total_function %}
+                                                            <option value={{f.id}}>{{f.name}}</option>
+                                                            {% endfor %}
+                                                      </select>
+                                                      
+                                                      
+                                                </div>
+                                                <input type="hidden" class="form-control form-control-modern"
+                                                      name="case_id" required value={{case_id}}>
+                                          </div>
+                                          <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                      data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary" onclick="add_task('{{case_id}}')">Add</button>
+                                          </div>
+                                    </div>
+                              </div>
+
+                        </div>
+                  </div> -->
+
+                  <!-- <div class="modal fade" id="updateTask" role="dialog" aria-labelledby="updateTaskLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Update Task</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              
+                              
+                              <div class="modal fade" id="add_input_function" role="dialog" aria-labelledby="addInputFunctionLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Add input</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                          <label>Function input</label>
+                                          <select id="function_input" name="input_dataframe" onchange="check_for_multiple_input('{{case_id}}')" class="form-control form-select" style="width:100%">
+                                                <option value="">-------</option>
+                                                {% for d in data %}
+                                                <option value={{d.id}}>{{d.alias}}</option>
+                                                {% endfor %}
+                                          </select>
+                                          <label>is multiple input</label>
+                                          <input type="checkbox" class="form-control form-select" onchange="get_dropdown('{{case_id}}')"
+                                                id="multiple_input_check" required />
+                                                
+                                          <label>Input dataframe</label>
+                                          <select multiple id="input_dataframe" name="input_dataframe" class="form-control form-select disable_class" required disabled style="width:100%">
+                                                <option>---------</option>
+                                          </select> 
+                                          <p class="d-none" id="input_param-error-txt"></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                          <button type="submit" class="btn btn-primary" onclick="add_input_function()">Add</button>
+                                        </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="form-group row align-items-start d-flex flex-column py-0">
+                                <label for="alias">Alias Name</label>
+                                <input type="text" class="form-control form-control-modern" id="alias" required />
+                                <p id="code-id-error-txt" class="d-none"></p>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_input_function">Add</button>
+                                <p id="input_functions_params">
+                                    
+
+                                </p>
+                                <label for="fid">Function</label>
+                                <select id="fid" class="form-control form-select" onchange="get_external_config()" style="width:100%">
+                                  {% for f in total_function %}
+                                  <option value="{{ f.id }}">{{ f.name }}</option>
+                                  {% endfor %}
+                                </select>
+                              </div>
+                              <div id="put_external_config"></div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                              <button type="submit" class="btn btn-primary" onclick="add_task('{{ case_id }}')">Add</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div> -->
+
+                  <div class="modal fade" id="createTask" role="dialog" aria-labelledby="createTaskLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Add Task</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              
+                              
+                              <div class="modal fade" id="add_input_function" role="dialog" aria-labelledby="addInputFunctionLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Add input</h5>
+                                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                      </button>
+                                    </div>
+                                    <div class="modal-body">
+                                          <label>Function input</label>
+                                          <select id="function_input" name="input_dataframe" onchange="check_for_multiple_input('{{case_id}}')" class="form-control form-select" style="width:100%">
+                                                <option value="">-------</option>
+                                                {% for d in data %}
+                                                <option value={{d.id}}>{{d.alias}}</option>
+                                                {% endfor %}
+                                          </select>
+                                          <!-- <label>is multiple input</label>
+                                          <input type="checkbox" class="form-control form-select" onchange="get_dropdown('{{case_id}}')"
+                                                id="multiple_input_check" required />
+                                                -->
+                                          <label>Input dataframe</label>
+                                          <select multiple id="input_dataframe" name="input_dataframe" class="form-control form-select disable_class" required disabled style="width:100%">
+                                                <option>---------</option>
+                                          </select> 
+                                          <p class="d-none" id="input_param-error-txt"></p>
+                                    </div>
+                                    <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                          <button type="submit" class="btn btn-primary" onclick="add_input_function()">Add</button>
+                                        </div>
+                                  </div>
+                                </div>
+                              </div>
+
+
+                              <div class="form-group row align-items-start d-flex flex-column py-0">
+                                <label for="alias">Alias Name</label>
+                                <input type="text" class="form-control form-control-modern" id="alias" required />
+                                <p id="code-id-error-txt" class="d-none"></p>
+                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#add_input_function">Add</button>
+                                <p id="input_functions_params">
+                                    
+
+                                </p>
+                                <label for="fid">Function</label>
+                                <select id="fid" class="form-control form-select" onchange="get_external_config()" style="width:100%">
+                                  {% for f in total_function %}
+                                  <option value="{{ f.id }}">{{ f.name }}</option>
+                                  {% endfor %}
+                                </select>
+                              </div>
+                              <div id="put_external_config"></div>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                              <button type="submit" class="btn btn-primary" onclick="add_task('{{ case_id }}')">Add</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      
+
+                  <div class="modal fade" id="deletion_function" role="dialog" aria-labelledby="deletionLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                              <form class="action-buttons-fixed mb-0" method="post"
+                                    action="/delete_task/">
+                                    {% csrf_token %}
+                                    <div class="modal-content">
+                                          <div class="modal-header">
+                                                <h5 class="modal-title">Delete</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                      aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                </button>
+                                          </div>
+                                          <div class="modal-body">
+
+                                                Are you sure you want to delete.
+                                                <input type="hidden" id="case_deletion"
+                                                      class="form-control form-control-modern" name="case_id" required
+                                                      value="" />
+                                                <input type="hidden" id="function_deletion"
+                                                      class="form-control form-control-modern" name="function_id"
+                                                      required value="" />
+
+                                          </div>
+                                          <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                      data-dismiss="modal">No</button>
+                                                <button type="submit" class="btn btn-primary">Yes</button>
+                                          </div>
+                                    </div>
+                              </form>
+
+                        </div>
+                  </div>
+
+                  <div class="modal fade" id="deletion_case_task_data" role="dialog" aria-labelledby="deletionLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                        <form class="action-buttons-fixed mb-0" method="post"
+                              action="/delete_task_data/">
+                              {% csrf_token %}
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                          <h5 class="modal-title">Delete</h5>
+                                          <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                          </button>
+                                    </div>
+                                    <div class="modal-body">
+
+                                          Are you sure you want to delete.
+                                          <input type="hidden" id="task_detail_deletion"
+                                                class="form-control form-control-modern" name="task_detail_id" required
+                                                value="" />
+                                          <input type="hidden" id="case_detail_deletion"
+                                                class="form-control form-control-modern" name="case_id" required
+                                                value="" />
+                                          <input type="hidden" id="function_detail_deletion"
+                                                class="form-control form-control-modern" name="function_id"
+                                                required value="" />
+                                          <input type="hidden" id="task_detail_id_deletion"
+                                                class="form-control form-control-modern" name="task_id"
+                                                required value="" />
+                                    </div>
+                                    <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary"
+                                                data-dismiss="modal">No</button>
+                                          <button type="submit" class="btn btn-primary">Yes</button>
+                                    </div>
+                              </div>
+                        </form>
+
+                  </div>
+            </div>
+
+                  <!-- add data model -->
+                  <div class="modal fade" id="addStepTask" role="dialog" aria-labelledby="addStepTaskLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                              <form class="action-buttons-fixed mb-0" method="post" action="/add_step_task/">
+                                    {% csrf_token %}
+                                    <div class="modal-content">
+                                          <div class="modal-header">
+                                                <h5 class="modal-title">Add Task</h5>
+                                                <button type="button" class="close" data-dismiss="modal"
+                                                      aria-label="Close">
+                                                      <span aria-hidden="true">&times;</span>
+                                                </button>
+                                          </div>
+                                          <div class="modal-body">
+                                                <div class="form-group align-items-center py-0">
+                                                      <div id="data_represent">
+
+                                                      </div>
+                                                      {% for k,v in function_config.items %}
+                                                      {% if v == 'Dataframe' %}
+                                                      
+                                                      
+                                                      <label>{{k}}</label>
+                                                      <p>{{loop.index}}</p>
+                                                      <select id="merge_function_input_{{k}}" name="function_input{{loop.index}}" onchange="check_for_multiple_input_in_merge('{{case_id}}', '{{k}}')" class="form-control form-select" style="width:100%">
+                                                            <option value="">-------</option>
+                                                            {% for d in data %}
+                                                            <option value={{d.id}}>{{d.alias}}</option>
+                                                            {% endfor %}
+                                                      </select>
+                                                      <!-- <label>is multiple input</label>
+                                                      <input type="checkbox" class="form-control form-select" onchange="get_dropdown('{{case_id}}')"
+                                                            id="multiple_input_check" required />
+                                                            -->
+                                                      <select id="merge_input_dataframe_{{k}}" name="df{{loop.index}}" class="form-control form-select disable_class" required disabled style="width:100%">
+                                                            <option>---------</option>
+                                                      </select> 
+                                                      <p class="d-none" id="input_param-error-txt"></p>
+
+
+
+
+                                                      {% else %}
+                                                      <label>{{ k }}</label>
+                                                      <input type="{{ v }}" class="form-control form-control-modern"
+                                                            name="{{ k }}" value="" />
+                                                      {% endif %}
+
+                                                      {% endfor %}
+                                                      <input type="hidden" class="form-control form-control-modern"
+                                                            name="function_id" required value="{{ function_id }}" />
+                                                      <input type="hidden" class="form-control form-control-modern"
+                                                            name="case_id" required value="{{ case_id }}" />
+                                                      <input type="hidden" class="form-control form-control-modern"
+                                                            name="task_id" required value="{{ task_id }}" />
+                                                </div>
+                                          </div>
+                                          <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary"
+                                                      data-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-primary">Add</button>
+                                          </div>
+                                    </div>
+                              </form>
+
+                        </div>
+                  </div>
+
+                  <!-- edit case task detail-->
+                  <div class="modal fade" id="case_task_detail" role="dialog" aria-labelledby="casetaskdetailLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                        <form class="action-buttons-fixed mb-0" method="post" action="/edit_task_detail/">
+                              {% csrf_token %}
+                              <div class="modal-content">
+                                    <div class="modal-header">
+                                          <h5 class="modal-title">Update data</h5>
+                                          <button type="button" class="close" data-dismiss="modal"
+                                                aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                          </button>
+                                    </div>
+                                    <div class="modal-body">
+                                          <div class="form-group align-items-center py-0" id="popup_data_body">
+                                                <!-- <div id="">
+
+                                                </div> -->
+                                                <!-- {% for k,v in function_config.items %}
+                                                <label>{{ k }}</label>
+                                                <input type="{{ v }}" class="form-control form-control-modern"
+                                                      name="{{ k }}" value="" />
+                                                {% endfor %}
+                                                -->
+                                                <!-- <input type="hidden" class="form-control form-control-modern"
+                                                      name="function_id" required value="{{ function_id }}" />
+                                                <input type="hidden" class="form-control form-control-modern"
+                                                      name="case_id" required value="{{ case_id }}" />
+                                                <input type="hidden" class="form-control form-control-modern"
+                                                      name="task_id" required value="{{ task_id }}" />  -->
+                                          </div>
+                                    </div>
+                                    <div class="modal-footer" id="popup_data_footer">                                          
+                                    </div>
+                              </div>
+                        </form>
+
+                  </div>
+            </div>
+
+            </div>
+
+
+            <!--Middle Pane-->
+            <div style="width:40%;" class="v1">
+                  <div style="height: 14%;">
+                        <button type="button" class="btn btn-primary" onclick="execute_all_steps('{{case_id}}')"
+                              style="float: right; margin: 25px;">
+                              Run
+                        </button>
+                  </div>
+                  <div style="overflow: scroll; width:100%; height: 86%; ">
+
+                        <div class="">
+
+                              <div id="function_output">
+                                    
+                                    {% for output in task_output %}
+                                    {{output}}
+                                    <br>
+                                    {% endfor %}
+                              </div>
+                        </div>
+                  </div>
+            </div>
+
+
+            <!-- Right pane -->
+            <div class="right-pane" style="width:35%;">
+            <div class="filter_wrapper" style="display: flex;" id="function_detail_via_case">
+                  <div class="input-conatiner" style="gap:5px">
+                        <!-- <label>Start:</label> -->
+                        <input type="datetime-local" style="float: left;" onchange="changed_start_time()" id="start_time_id" class="form-control form-control-modern"
+                              name="startime" value="" required />
+                        
+                        <!-- <label>End:</label> -->
+                        <input type="datetime-local" class="form-control form-control-modern" onchange="changed_end_time()" id="end_time_id"
+                              name="endtime" value="" required />
+                  </div>
+                  <!-- <div> -->
+                        <button type="button" class="btn btn-primary" data-toggle="modal"
+                        data-target="#addStepTask" style="float: right; ">
+                        +
+                        </button>
+                  <!-- </div> -->
+            </div>
+                  <div style="height: 86%; width: 100%;  overflow: scroll; margin-top: 25px; display: flex;">
+                        <div class="" id="step_function_data">
+                              
+                        <!-- {{table_tag}} -->
+                        {% if headers %}
+                              <table style='border: 1px solid black;'>
+                                    <tr>
+                                          {% for header in headers %}
+                                          <th style='border: 1px solid black;'>{{header}}</th>
+                                          {% endfor %}
+                                          <th style='border: 1px solid black;'>Action</th>
+                                    </tr>
+                                    {% for datas in task_content_data %}
+                                    <tr>
+                                          {% for d in datas.data %}
+                                          <td style='border: 1px solid black;'>{{d}}</td>
+                                          {% endfor %}
+                                          <td style="text-align: center; border: 1px solid black;">
+                                                <li class="list-inline-item">
+                                                      <button type="button" class="btn rounded-0" data-placement="top"
+                                                            data-toggle="modal" data-target="#case_task_detail"
+                                                            onclick="open_edit_popup(event,'{{datas.id}}', '{{case_id}}', '{{function_id}}','{{task_id}}')"
+                                                            title="Edit">
+                                                            <i class="fa fa-edit"></i></button>
+                                                </li>
+                                                <li class="list-inline-item">
+                                                      <button type="button" class="btn btn-sm rounded-0" data-placement="top"
+                                                            onclick="delete_case_detail('{{datas.id}}', '{{case_id}}', '{{function_id}}','{{task_id}}')"
+                                                            data-toggle="modal" data-target="#deletion_case_task_data"
+                                                            title="Delete">
+                                                            <i class="fa fa-trash"></i></button>
+                                                </li>
+                                          </td>
+
+                                    </tr>
+                                    {% endfor %}
+                              </table>
+                        {% endif %}
+                        </div>
+
+                  </div>
+            </div>
+            
+            
+      </div>
+      <script src="https://code.jquery.com/jquery-3.6.4.js"
+            integrity="sha256-a9jBBRygX1Bh5lt8GZjXDzyOB+bWve9EiO7tROUtj/E=" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-Fy6S3B9q64WdZWQUiU+q4/2Lc9npb8tCaSX9FK7E8HnRr0Jz8D6OP9dO5Vg3Q9ct"
+            crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+            integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+            crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+      <Script src="{% static 'js/custom.js' %}"></Script>
+      <Script src="{% static 'js/custom1.js' %}"></Script>
+</body>
+
+</html>

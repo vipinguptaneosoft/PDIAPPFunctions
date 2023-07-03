@@ -1,0 +1,3 @@
+dol_tag,run_tag,tag_name,rolling_window,limit,tag_exception,x_value,y_value
+f1p1_dol,f1p1_run,avg_feed,15,15,avg_feed,avg_feed,f1p1_t34
+,,f1p1_t34,15,15,,,
